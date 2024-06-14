@@ -2,25 +2,34 @@ package com.hangrycoder.searchmviapp.di
 
 import com.hangrycoder.searchmviapp.apiservice.ApiService
 import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Singleton
 
 @Module
-class NetworkModule {
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
 
-    fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {
+    @Provides
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
-    fun getOkHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
+    @Provides
+    fun provideOkHttpClient(interceptor: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
             .build()
     }
 
-    fun getRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @Singleton
+    @Provides
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://api.jsonbin.io/")
             .addConverterFactory(MoshiConverterFactory.create())
@@ -28,7 +37,9 @@ class NetworkModule {
             .build()
     }
 
-    fun getApiService(retrofit: Retrofit): ApiService {
+    @Singleton
+    @Provides
+    fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
 }
