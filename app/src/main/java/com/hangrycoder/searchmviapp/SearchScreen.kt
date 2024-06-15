@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hangrycoder.searchmviapp.intent.UserIntent
 import com.hangrycoder.searchmviapp.model.Transaction
@@ -39,7 +41,7 @@ import kotlinx.coroutines.launch
 fun SearchScreen(mainViewModel: MainViewModel = hiltViewModel()) {
     var query by remember { mutableStateOf("") }
     val userIntent = mainViewModel.userIntent
-    val searchState = mainViewModel.searchState.collectAsStateWithLifecycle()
+    val searchState = mainViewModel.searchState.collectAsStateWithLifecycle(minActiveState = Lifecycle.State.RESUMED)
     val scope = rememberCoroutineScope()
 
     Column {
