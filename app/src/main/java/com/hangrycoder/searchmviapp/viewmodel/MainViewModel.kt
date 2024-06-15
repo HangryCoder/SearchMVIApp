@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,6 +34,7 @@ class MainViewModel @Inject constructor(private val repository: TransactionRepos
         viewModelScope.launch {
             userIntent
                 .consumeAsFlow()
+                .debounce(500)
                 .collect {
                     when (it) {
                         is UserIntent.Idle -> {
@@ -53,6 +56,7 @@ class MainViewModel @Inject constructor(private val repository: TransactionRepos
                 val result = repository.searchTransactions(query)
                 _searchState.value = SearchState.Success(result)
             } catch (e: Exception) {
+                println(e.printStackTrace())
                 _searchState.value = SearchState.Error(e.message)
             }
         }
