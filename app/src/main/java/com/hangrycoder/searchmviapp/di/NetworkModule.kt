@@ -29,13 +29,16 @@ object NetworkModule {
             .build()
     }
 
-    @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        val moshi = Moshi.Builder()
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
+    }
 
+    @Singleton
+    @Provides
+    fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://api.jsonbin.io/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
