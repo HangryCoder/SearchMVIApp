@@ -7,13 +7,13 @@ import com.hangrycoder.searchmviapp.repository.TransactionRepository
 import com.hangrycoder.searchmviapp.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,6 +30,7 @@ class MainViewModel @Inject constructor(private val repository: TransactionRepos
         handleIntent()
     }
 
+    @OptIn(FlowPreview::class)
     private fun handleIntent() {
         viewModelScope.launch {
             userIntent
