@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hangrycoder.searchmviapp.intent.UserIntent
 import com.hangrycoder.searchmviapp.model.Transaction
 import com.hangrycoder.searchmviapp.state.SearchState
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
 fun SearchScreen(mainViewModel: MainViewModel = hiltViewModel()) {
     var query by remember { mutableStateOf("") }
     val userIntent = mainViewModel.userIntent
-    val searchState = mainViewModel.searchState.collectAsState()
+    val searchState = mainViewModel.searchState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
     Column {
@@ -144,12 +145,11 @@ fun TransactionList(list: List<Transaction>) {
             .padding(8.dp)
     ) {
         items(list) {
-            if (!it.merchant.isNullOrEmpty())
-                Text(
-                    text = it.merchant, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp, 16.dp)
-                )
+            Text(
+                text = "${it.merchant} - ${it.amount}", modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp, 16.dp)
+            )
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()

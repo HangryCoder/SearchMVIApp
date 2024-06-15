@@ -78,6 +78,9 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.2")
+
 }
 
 kapt {
