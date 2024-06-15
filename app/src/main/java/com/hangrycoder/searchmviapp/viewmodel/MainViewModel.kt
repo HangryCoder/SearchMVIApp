@@ -36,7 +36,7 @@ class MainViewModel @Inject constructor(private val repository: TransactionRepos
     @OptIn(FlowPreview::class)
     private fun handleIntent() {
         job?.cancel()
-        job = viewModelScope.launch {
+        job = viewModelScope.launch(Dispatchers.IO) {
             userIntent
                 .consumeAsFlow()
                 .debounce(500)
@@ -50,20 +50,18 @@ class MainViewModel @Inject constructor(private val repository: TransactionRepos
         }
     }
 
-    private fun searchTransactions(query: String) {
+    private suspend fun searchTransactions(query: String) {
         if (query.isEmpty()) {
-            _searchState.value = SearchState.Success(null)
+            _searchState.value = SearchState.Idle
             return
         }
         _searchState.value = SearchState.Loading
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val result = repository.searchTransactions(query)
-                _searchState.value = SearchState.Success(result)
-            } catch (e: Exception) {
-                println(e.printStackTrace())
-                _searchState.value = SearchState.Error("No results. Try another keyword")
-            }
+        try {
+            val result = repository.searchTransactions(query)
+            _searchState.value = SearchState.Success(result)
+        } catch (e: Exception) {
+            println(e.printStackTrace())
+            _searchState.value = SearchState.Error("No results. Try another keyword")
         }
     }
 }
