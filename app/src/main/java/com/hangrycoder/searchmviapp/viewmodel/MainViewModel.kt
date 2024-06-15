@@ -8,6 +8,7 @@ import com.hangrycoder.searchmviapp.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,22 +27,21 @@ class MainViewModel @Inject constructor(private val repository: TransactionRepos
     private var _searchState = MutableStateFlow<SearchState>(SearchState.Idle)
     val searchState: StateFlow<SearchState> = _searchState.asStateFlow()
 
+    private var job: Job? = null
+
     init {
         handleIntent()
     }
 
     @OptIn(FlowPreview::class)
     private fun handleIntent() {
-        viewModelScope.launch {
+        job?.cancel()
+        job = viewModelScope.launch {
             userIntent
                 .consumeAsFlow()
                 .debounce(500)
                 .collect {
                     when (it) {
-                        is UserIntent.Idle -> {
-                            //Do Nothing
-                        }
-
                         is UserIntent.Search -> {
                             searchTransactions(it.query)
                         }

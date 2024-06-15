@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
 fun SearchScreen(mainViewModel: MainViewModel = hiltViewModel()) {
     var query by remember { mutableStateOf("") }
     val userIntent = mainViewModel.userIntent
-    val searchState = mainViewModel.searchState
+    val searchState = mainViewModel.searchState.collectAsState()
     val scope = rememberCoroutineScope()
 
     Column {
