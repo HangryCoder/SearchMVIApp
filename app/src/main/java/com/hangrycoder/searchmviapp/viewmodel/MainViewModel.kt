@@ -51,6 +51,10 @@ class MainViewModel @Inject constructor(private val repository: TransactionRepos
     }
 
     private fun searchTransactions(query: String) {
+        if (query.isEmpty()) {
+            _searchState.value = SearchState.Success(null)
+            return
+        }
         _searchState.value = SearchState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -58,7 +62,7 @@ class MainViewModel @Inject constructor(private val repository: TransactionRepos
                 _searchState.value = SearchState.Success(result)
             } catch (e: Exception) {
                 println(e.printStackTrace())
-                _searchState.value = SearchState.Error(e.message)
+                _searchState.value = SearchState.Error("No results. Try another keyword")
             }
         }
     }

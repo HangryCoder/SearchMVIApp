@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,10 +25,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hangrycoder.searchmviapp.intent.UserIntent
 import com.hangrycoder.searchmviapp.model.Transaction
@@ -73,7 +76,7 @@ fun SearchScreen(mainViewModel: MainViewModel = hiltViewModel()) {
 
         when (searchState.value) {
             is SearchState.Loading -> {
-
+                LoadingView()
             }
 
             is SearchState.Success -> {
@@ -84,7 +87,9 @@ fun SearchScreen(mainViewModel: MainViewModel = hiltViewModel()) {
             }
 
             is SearchState.Error -> {
-
+                val error = (searchState.value as SearchState.Error).error
+                    ?: "Something went wrong. Try again"
+                ErrorView(message = error)
             }
 
             else -> {
@@ -101,12 +106,34 @@ fun SearchView(value: String, onValueChange: (String) -> Unit) {
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
-        label = { "Input text here" },
+        label = { Text("Input text here") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp, 0.dp)
             .wrapContentHeight()
     )
+}
+
+@Composable
+fun LoadingView() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = "Loading....",
+            modifier = Modifier.align(Alignment.Center),
+            fontSize = 24.sp
+        )
+    }
+}
+
+@Composable
+fun ErrorView(message: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = message,
+            modifier = Modifier.align(Alignment.Center),
+            fontSize = 24.sp
+        )
+    }
 }
 
 @Composable
